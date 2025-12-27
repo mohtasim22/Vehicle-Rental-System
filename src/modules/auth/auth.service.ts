@@ -29,7 +29,17 @@ const loginUserIntoDB = async(email : string, password : string)=>{
         role : user.rows[0].role
     }
 
-    const token = jwt.sign(jwtPayload, config.jwtSecret as string, {expiresIn: "7d"})
+    // const token = jwt.sign(jwtPayload, config.jwtSecret as string, {expiresIn: "7d"})
+    const token = jwt.sign(
+    {
+            ...jwtPayload,
+            jti: crypto.randomUUID(), //makes token unique every login
+        },
+        config.jwtSecret as string,
+        {
+            expiresIn: "7d",
+        }
+    );
 
     delete user.rows[0].password;
     delete user.rows[0].created_at;
